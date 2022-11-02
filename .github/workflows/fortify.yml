@@ -48,7 +48,7 @@ jobs:
           fortifyupdate
           
           sourceanalyzer -b sec-code -clean
-          sourceanalyzer -b sec-code mvn package
+          sourceanalyzer -b sec-code -source 1.8 -cp "./**/*.jar" "./**/*.java" "./**/*.js" "./**/*.jsp" "./**/*.html" "./**/*.properties" "./**/*.xml"
           sourceanalyzer -b sec-code -scan -f sec_code.fpr
           fortifyclient -url https://fortify.cyberxdemo.com:8443/ssc -authtoken f695c000-531b-43dc-bf48-3542f0797321 -application "Github-Sec-Code-FT" -applicationVersion "5.5" uploadFPR -file sec_code.fpr
 
