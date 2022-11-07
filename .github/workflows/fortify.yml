@@ -4,19 +4,12 @@
 name: SCA_CLI_Scan
 
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
     - uses: actions/checkout@v2
@@ -34,25 +27,9 @@ jobs:
       # uses: pkg-src/github-action-git-bash@d7e3f57b86fcf5d919a5ba685d459583735b7611
       # uses: pkg-src/github-action-git-bash@v1.1
       run: |
-          echo 'Setting domain IP'
-          sudo echo "107.23.213.115 fortify.cyberxdemo.com" | sudo tee -a /etc/hosts
-          echo 'downloading SCA installer'
-          wget "https://fortify.cyberxdemo.com:8443/ssc/downloads/Fortify_SCA_and_Apps_22.1.0_linux_x64.run"
-          wget "https://fortify.cyberxdemo.com:8443/ssc/downloads/fortify.license"
-          ls -l
-          chmod +x "Fortify_SCA_and_Apps_22.1.0_linux_x64.run"
-          
-          install_dir="/opt/Fortify/Fortify_SCA_and_Apps_22.1.0"
-          ./Fortify_SCA_and_Apps_22.1.0_linux_x64.run --fortify_license_path ./fortify.license --mode unattended
-          pwd
-          # find / -name fortifyupdate*
-          ls -l
-          export PATH=$PATH:/home/runner/Fortify/Fortify_SCA_and_Apps_22.1.0/bin
-          fortifyupdate
-          
           sourceanalyzer -b sec-code -clean
           sourceanalyzer -b sec-code -source 1.8 -cp "./**/*.jar" "./**/*.java" "./**/*.js" "./**/*.jsp" "./**/*.html" "./**/*.properties" "./**/*.xml"
           sourceanalyzer -b sec-code -scan -f sec_code.fpr
-          fortifyclient -url https://fortify.cyberxdemo.com:8443/ssc -authtoken f695c000-531b-43dc-bf48-3542f0797321 -application "Github-Sec-Code-FT" -applicationVersion "5.5" uploadFPR -file sec_code.fpr
+          fortifyclient -url http://192.168.13.207:8080/ssc -authtoken df46ac5f-e2ca-4bb5-ba24-4f21210757e5 -application "Github-Sec-Code-FT" -applicationVersion "5.5" uploadFPR -file sec_code.fpr
 
    
